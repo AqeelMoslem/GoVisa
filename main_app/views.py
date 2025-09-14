@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # Import HttpResponse to send text-based responses
 from django.http import HttpResponse
-from .models import Visa , Toy
+from .models import Visa 
 # from .forms import FeedingForm
 
 from django.views.generic import ListView, DetailView # add these 
