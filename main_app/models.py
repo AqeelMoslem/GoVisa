@@ -14,3 +14,8 @@ class Visa(models.Model):
     def get_absolute_url(self):
         return reverse('visa-detail', kwargs={'visa_id': self.id})
     
+
+
+
+    
+    

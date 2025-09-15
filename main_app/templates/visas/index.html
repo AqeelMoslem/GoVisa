@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% load static %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/visas/visa-index.css' %}"
+/>
+{% endblock %} {% block content %}
+
+<section class="page-header">
+  <h1>Visa List</h1>
+  {% comment %} <img
+    src="{% static 'images/cool-cat.svg' %}"
+    alt="A cool cat"
+  />
+  <img
+    src="{% static 'images/happy-cat.svg' %}"
+    alt="A happy cat"
+  />
+  <img
+    src="{% static 'images/teacup-cat.svg' %}"
+    alt="A cat in a teacup"
+  />
+  <img
+    src="{% static 'images/cat-in-box.svg' %}"
+    alt="A cat in a box"
+  /> {% endcomment %}
+</section>
+
+<section class="card-container">
+  {% for visa in visas %}
+    <div class="card">
+    <a href="{% url 'visa-detail' visa.id %}">
+        <div class="card-content">
+          <h2 class="card-title">{{ visa.full_name }}</h2>
+          <p>Passport Number: {{ visa.passport_number }}</p>
+          <p>Destination: {{ visa.destination_country }}</p>
+          <p>Travel Date: {{ visa.travel_date }}</p>
+          <p>Status: {{ visa.status }}</p>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

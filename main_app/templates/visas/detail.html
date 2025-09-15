@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/visas/visa-detail.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="visa-container">
+  <div class="visa-img">
+    <img src="{% static 'images/passport-icon.svg' %}" alt="Visa Passport Icon" />
+  </div>
+
+<div class="visa-details">
+  <h1>{{ visa.full_name }}</h1>
+  <h2>Passport Number: {{ visa.passport_number }}</h2>
+  <p><strong>Destination Country:</strong> {{ visa.destination_country }}</p>
+  <p><strong>Travel Date:</strong> {{ visa.travel_date|date:"F j, Y" }}</p>
+  <p><strong>Status:</strong> {{ visa.status }}</p>
+
+  <div class="visa-actions">
+    <a href="{% url 'visa-update' visa.id %}" class="btn warn">Edit</a>
+    <a href="{% url 'visa-delete' visa.id %}" class="btn danger">Delete</a>
+  </div>
+</div>
+
+</section>
+{% endblock %}
