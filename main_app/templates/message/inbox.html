@@ -1,0 +1,20 @@
+<h2>Inbox</h2>
+<h3>Received Messages</h3>
+<ul>
+  {% for msg in messages_received %}
+    <li>
+      <a href="{% url 'view_message' msg.id %}">
+        {{ msg.subject }} from {{ msg.sender.username }} {% if not msg.is_read %}(New){% endif %}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+
+<h3>Sent Messages</h3>
+<ul>
+  {% for msg in messages_sent %}
+    <li>
+      <a href="{% url 'view_message' msg.id %}">{{ msg.subject }} to {{ msg.recipient.username }}</a>
+    </li>
+  {% endfor %}
+</ul>
