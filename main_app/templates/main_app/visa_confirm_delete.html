@@ -1,0 +1,18 @@
+{% extends 'base.html' %}  
+{% load static %} 
+{% block content %}
+
+<div class="page-header">
+  <h1>Delete Visa?</h1>
+  <img src="{% static 'images/passport-icon.svg' %}" alt="Passport Icon" />
+</div>
+
+<h2>Are you sure you want to delete {{ visa.full_name }}'s visa?</h2>
+
+<form action="" method="post" class="form">
+  {% csrf_token %}
+  <a href="{% url 'visa-detail' visa_id=visa.id %}" class="btn secondary">Cancel</a>
+  <button type="submit" class="btn danger">Yes - Delete!</button>
+</form>
+
+{% endblock %}

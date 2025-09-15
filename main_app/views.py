@@ -62,4 +62,4 @@ class VisaUpdate(UpdateView):
 
 class VisaDelete(DeleteView):
     model = Visa
-    success_url = '/Visas/'
+    success_url = '/visas/'
