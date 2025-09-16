@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ message.subject }}</h1>
+<p><strong>From:</strong> {{ message.sender }}</p>
+<p><strong>To:</strong> {{ message.receiver }}</p>
+<p><strong>Date:</strong> {{ message.created_at }}</p>
+<hr>
+<p>{{ message.body }}</p>
+<hr>
+<a href="{% url 'inbox' %}">Back to Inbox</a>
+{% endblock %}

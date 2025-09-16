@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome, Admin</h1>
+
+<h2>All Visa Applications</h2>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Full Name</th>
+    <th>Passport</th>
+    <th>Destination</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+  {% for visa in visas %}
+  <tr>
+    <td>{{ visa.full_name }}</td>
+    <td>{{ visa.passport_number }}</td>
+    <td>{{ visa.destination_country }}</td>
+    <td>{{ visa.travel_date }}</td>
+    <td>{{ visa.status }}</td>
+    <td>
+     <form action="{% url 'update-visa-status' visa.id %}" method="post">
+  {% csrf_token %}
+  <button type="submit" name="status" value="Approved">Approve</button>
+  <button type="submit" name="status" value="Rejected">Reject</button>
+  <button type="submit" name="status" value="Completed">Mark Completed</button>
+</form>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6">No visa applications found.</td></tr>
+  {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'admin-messages' %}" class="btn">📩 Messages</a>
+{% endblock %}

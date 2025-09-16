@@ -15,8 +15,9 @@
   /> {% endcomment %}
 </section>
 <h1>Welcome to Go Visa</h1>
-{% comment %} {% if not user.is_authenticated %}
+{% if not user.is_authenticated %}
   <section>
+    {% comment %} <input type="hidden" name="next" value="{{ next }}" /> {% endcomment %}
     <form action="{% url 'home' %}" method="post" class="login">
       <h1>Login</h1>
       {% csrf_token %} {{ form.as_p }}
@@ -24,5 +25,5 @@
       <button type="submit" class="btn submit">Login</button>
     </form>
   </section>
-{% endif %} {% endcomment %}
+{% endif %} 
 {% endblock %}

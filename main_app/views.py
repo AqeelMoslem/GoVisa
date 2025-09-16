@@ -34,7 +34,7 @@ def about(request):
 
 
 def visa_index(request):
-    visas = Visa.objects.all() 
+    visas = Visa.objects.filter(user=request.user)
     return render(request, 'visas/index.html', { 'visas': visas })
 
 # views.py
@@ -45,15 +45,15 @@ def visa_detail(request, visa_id):
 
 # main-app/views.py
 
-class VisaCreate(CreateView):
+class VisaCreate(LoginRequiredMixin,CreateView):
     model = Visa
-    form_class = VisaForm       # لتعديل البيانات مع calendar picker
+    form_class = VisaForm      
     success_url = reverse_lazy('visa-index') 
-    # def form_valid(self, form):
-    #     # Assign the logged in user (self.request.user)
-    #     form.instance.user = self.request.user  # form.instance is the cat
-    #     # Let the CreateView do its job as usual
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        # Assign the logged in user (self.request.user)
+        form.instance.user = self.request.user  # form.instance is the cat
+        # Let the CreateView do its job as usual
+        return super().form_valid(form)
 
 class VisaUpdate(UpdateView):
     model = Visa
@@ -99,3 +99,74 @@ def new_message(request):
     else:
         form = MessageForm()
     return render(request, 'messages/new_message.html', {'form': form})
+
+class Home(LoginView):
+    template_name = 'home.html'
+
+
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        # This is how to create a 'user' form object
+        # that includes the data from the browser
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            # This will add the user to the database
+            user = form.save()
+            # This is how we log a user in
+            login(request, user)
+            return redirect('visa-index')
+        else:
+            error_message = 'Invalid sign up - try again'
+    # A bad POST or a GET request, so render signup.html with an empty form
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'signup.html', context)
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('home') 
+    
+# main_app/views.py
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def admin_dashboard(request):
+    visas = Visa.objects.all().order_by("-travel_date")
+    return render(request, "admin/dashboard.html", {"visas": visas})
+
+@staff_member_required
+def admin_messages(request):
+    inbox = Message.objects.all().order_by("-timestamp")
+    return render(request, "admin/messages.html", {"inbox": inbox})
+
+@staff_member_required
+def admin_reply_message(request, msg_id):
+    msg = get_object_or_404(Message, id=msg_id)
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.sender = request.user
+            reply.receiver = msg.sender   # يرد على صاحب الرسالة
+            reply.save()
+            return redirect("admin-messages")
+    else:
+        form = MessageForm()
+    return render(request, "admin/reply.html", {"form": form, "msg": msg})
+
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404, redirect
+
+@staff_member_required
+@require_POST
+def update_visa_status(request, visa_id):
+    visa = get_object_or_404(Visa, id=visa_id)
+    new_status = request.POST.get("status")
+    if new_status in dict(Visa.STATUS_CHOICES):
+        visa.status = new_status
+        visa.save()
+    return redirect("admin-dashboard")
+
+

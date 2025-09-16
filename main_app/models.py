@@ -1,22 +1,27 @@
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth.models import User
 
 class Visa(models.Model):
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Approved", "Approved"),
+        ("Rejected", "Rejected"),
+        ("Completed", "Completed"),
+    ]
     full_name = models.CharField(max_length=100)
     passport_number = models.CharField(max_length=50)
     destination_country = models.CharField(max_length=100)
     travel_date = models.DateField()
-    status = models.CharField(max_length=20, default="Pending")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="Pending")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 
     def __str__(self):
-        return f"{self.full_name} - {self.destination_country}"
-    def get_absolute_url(self):
-        return reverse('visa-detail', kwargs={'visa_id': self.id})
-    
+        return f"{self.full_name} - {self.status}"
 
-from django.db import models
-from django.contrib.auth.models import User
+
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")

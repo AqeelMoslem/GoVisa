@@ -28,16 +28,27 @@
       </div>
     </div>
   </nav> {% endcomment %}
+ 
+   <nav>
   <ul>
-  <li><a href="{% url 'visa-index' %}">All Visas</a></li>
-  <li><a href="{% url 'visa-create' %}">Add a Visa</a></li>
-  <li><a href="{% url 'about' %}">About</a></li>
-
-
-    <a href="{% url 'inbox' %}">📩 Inbox</a>
-  
-</ul>
-
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'visa-index' %}">All Visas</a></li>
+      <li><a href="{% url 'visa-create' %}">Add a Visa</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li>
+        <form id="logout-form" method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Log out</button>
+        </form>
+      </li>
+    {% else %}
+      <!-- Only show About and Login/Sign Up when not logged in -->
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'home' %}">Login</a></li>
+      <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% endif %}
+  </ul>
+</nav>
   <!-- Page Content -->
   <div class="container mt-4">
     {% block content %}{% endblock %}
