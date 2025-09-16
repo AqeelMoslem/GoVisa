@@ -19,9 +19,14 @@
   <p><strong>Status:</strong> {{ visa.status }}</p>
 
   <div class="visa-actions">
-    <a href="{% url 'visa-update' visa.id %}" class="btn warn">Edit</a>
-    <a href="{% url 'visa-delete' visa.id %}" class="btn danger">Delete</a>
+    {% comment %} <a href="{% url 'visa-update' visa.id %}" class="btn warn">Edit</a>
+    <a href="{% url 'visa-delete' visa.id %}" class="btn danger">Delete</a> {% endcomment %}
+    {% if visa.user == request.user %}
+    <a href="{% url 'visa-update' visa.id %}">Edit</a>
+    <a href="{% url 'visa-delete' visa.id %}">Delete</a>
+    {% endif %}
   </div>
+
 </div>
 
 </section>

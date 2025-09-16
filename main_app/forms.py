@@ -16,3 +16,8 @@ class MessageForm(forms.ModelForm):
         fields = ['receiver', 'subject', 'body']
 
         
+
+class VisaStatusForm(forms.ModelForm):
+    class Meta:
+        model = Visa
+        fields = ['status']  # بس الحالة تتغير (والملف نرفعه يدوي في view)

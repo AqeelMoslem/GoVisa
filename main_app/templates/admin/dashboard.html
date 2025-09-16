@@ -1,38 +1,69 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Welcome, Admin</h1>
+<h1>🛠️ Welcome, Admin</h1>
 
-<h2>All Visa Applications</h2>
-<table border="1" cellpadding="5">
-  <tr>
-    <th>Full Name</th>
-    <th>Passport</th>
-    <th>Destination</th>
-    <th>Date</th>
-    <th>Status</th>
-    <th>Actions</th>
-  </tr>
-  {% for visa in visas %}
-  <tr>
-    <td>{{ visa.full_name }}</td>
-    <td>{{ visa.passport_number }}</td>
-    <td>{{ visa.destination_country }}</td>
-    <td>{{ visa.travel_date }}</td>
-    <td>{{ visa.status }}</td>
-    <td>
-     <form action="{% url 'update-visa-status' visa.id %}" method="post">
-  {% csrf_token %}
-  <button type="submit" name="status" value="Approved">Approve</button>
-  <button type="submit" name="status" value="Rejected">Reject</button>
-  <button type="submit" name="status" value="Completed">Mark Completed</button>
-</form>
-    </td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="6">No visa applications found.</td></tr>
-  {% endfor %}
-</table>
+<section class="visa-dashboard">
+  <table class="visa-table">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Passport</th>
+        <th>Destination</th>
+        <th>Travel Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for visa in visas %}
+      <tr>
+        <td>{{ visa.full_name }}</td>
+        <td>{{ visa.passport_number }}</td>
+        <td>{{ visa.destination_country }}</td>
+        <td>{{ visa.travel_date|date:"F j, Y" }}</td>
+        <td>
+          <span class="status {{ visa.status|lower }}">{{ visa.status }}</span>
+          {% if visa.document %}
+            <br>
+            <a href="{{ visa.document.url }}" target="_blank" class="file-link">📎 View File</a>
+          {% endif %}
+        </td>
+        <td>
+          <form method="post" action="{% url 'admin-update-visa' visa.id %}" enctype="multipart/form-data" class="status-form">
+            {% csrf_token %}
+            <select name="status">
+              {% for key, val in visa.STATUS_CHOICES %}
+                <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>
+                  {{ val }}
+                </option>
+              {% endfor %}
+            </select>
 
-<br>
-<a href="{% url 'admin-messages' %}" class="btn">📩 Messages</a>
+            <div class="file-upload">
+              <label>Upload (for Completed):</label>
+              <input type="file" name="upload_file">
+            </div>
+
+            <button type="submit" class="btn">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6">No visa applications found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="messages-link">
+  <a href="{% url 'admin-messages' %}" class="btn">📩 View Messages</a>
+</section>
 {% endblock %}

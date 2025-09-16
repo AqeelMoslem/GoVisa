@@ -33,9 +33,15 @@ def about(request):
     return render(request, 'about.html')
 
 
+# def visa_index(request):
+#     visas = Visa.objects.filter(user=request.user)
+#     return render(request, 'visas/index.html', { 'visas': visas })
 def visa_index(request):
-    visas = Visa.objects.filter(user=request.user)
-    return render(request, 'visas/index.html', { 'visas': visas })
+    if request.user.is_staff:  
+        visas = Visa.objects.all().order_by("-travel_date")  # الأدمن يشوف الكل
+    else:
+        visas = Visa.objects.filter(user=request.user).order_by("-travel_date")  # اليوزر يشوف طلباته فقط
+    return render(request, 'visas/index.html', {'visas': visas})
 
 # views.py
 
@@ -168,5 +174,65 @@ def update_visa_status(request, visa_id):
         visa.status = new_status
         visa.save()
     return redirect("admin-dashboard")
+from django.contrib import messages
+from .forms import VisaStatusForm
+
+@staff_member_required
+def admin_update_visa(request, visa_id):
+    visa = get_object_or_404(Visa, id=visa_id)
+    if request.method == "POST":
+        form = VisaStatusForm(request.POST, request.FILES, instance=visa)
+        if form.is_valid():
+            updated_visa = form.save()
+
+            # Approved → رسالة تنبيه
+            if updated_visa.status == "Approved":
+                messages.info(request, "تمت الموافقة، المعاملة ستأخذ بعض الوقت.")
+
+            # Completed → رفع ملف
+            if updated_visa.status == "Completed" and request.FILES.get("upload_file"):
+                uploaded_file = request.FILES["upload_file"]
+                with open(f"{settings.MEDIA_ROOT}/{uploaded_file.name}", "wb+") as dest:
+                    for chunk in uploaded_file.chunks():
+                        dest.write(chunk)
+                messages.success(request, "تم رفع الملف بنجاح.")
+
+            return redirect("admin-dashboard")
+    else:
+        form = VisaStatusForm(instance=visa)
+
+    return render(request, "admin/update_visa.html", {"form": form, "visa": visa})
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import redirect
+
+# فحص لو المستخدم Staff
+def is_staff(user):
+    return user.is_staff
 
 
+@login_required
+def create_visa(request):
+    if request.user.is_staff:
+        return redirect('admin-dashboard')  # الأدمن ما يسوي Create هنا
+    form = VisaForm(request.POST or None)
+    if form.is_valid():
+        visa = form.save(commit=False)
+        visa.user = request.user
+        visa.save()
+        return redirect('visa-index')
+    return render(request, 'visas/create.html', {'form': form})
+
+@login_required
+def edit_visa(request, visa_id):
+    visa = get_object_or_404(Visa, id=visa_id)
+    
+    # فقط صاحب الفيزا يقدر يعدل
+    if visa.user != request.user:
+        return redirect('visa-index')
+    
+    form = VisaForm(request.POST or None, instance=visa)
+    if form.is_valid():
+        form.save()
+        return redirect('visa-detail', visa_id=visa.id)
+    return render(request, 'visas/edit.html', {'form': form, 'visa': visa})
