@@ -44,6 +44,12 @@
     <a href="{% url 'visa-delete' visa.id %}">Delete</a>
   {% endif %}
 </div>
+{% if visa.document %}
+  {% if user.is_staff or visa.user == user and visa.status == "Completed" %}
+    <p>📎 File: <a href="{{ visa.document.url }}" target="_blank">Download</a></p>
+  {% endif %}
+{% endif %}
+
 
 
 </div>
