@@ -39,7 +39,7 @@
       </select>
       <button type="submit">Update</button>
     </form>
-  {% elif visa.user == request.user %}
+  {% elif visa.user == request.user and visa.status != "Completed" %}
     <a href="{% url 'visa-update' visa.id %}">Edit</a>
     <a href="{% url 'visa-delete' visa.id %}">Delete</a>
   {% endif %}
