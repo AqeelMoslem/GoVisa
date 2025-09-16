@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %}
 {% block content %}
 <h1>تعديل حالة الفيزا</h1>
 <p><strong>{{ visa.full_name }}</strong> - {{ visa.passport_number }}</p>
@@ -14,4 +14,4 @@
 {% endif %}
 
 <a href="{% url 'admin-dashboard' %}">رجوع</a>
-{% endblock %}
+{% endblock %} {% endcomment %}

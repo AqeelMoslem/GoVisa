@@ -18,14 +18,33 @@
   <p><strong>Travel Date:</strong> {{ visa.travel_date|date:"F j, Y" }}</p>
   <p><strong>Status:</strong> {{ visa.status }}</p>
 
-  <div class="visa-actions">
-    {% comment %} <a href="{% url 'visa-update' visa.id %}" class="btn warn">Edit</a>
-    <a href="{% url 'visa-delete' visa.id %}" class="btn danger">Delete</a> {% endcomment %}
+  {% comment %} <div class="visa-actions">
+    <a href="{% url 'visa-update' visa.id %}" class="btn warn">Edit</a>
+    <a href="{% url 'visa-delete' visa.id %}" class="btn danger">Delete</a> 
     {% if visa.user == request.user %}
     <a href="{% url 'visa-update' visa.id %}">Edit</a>
     <a href="{% url 'visa-delete' visa.id %}">Delete</a>
     {% endif %}
-  </div>
+  </div> {% endcomment %}
+  <div class="visa-actions">
+  {% if user.is_staff %}
+    <form method="post" action="{% url 'update-visa-status' visa.id %}">
+      {% csrf_token %}
+      <select name="status">
+        {% for key, val in visa.STATUS_CHOICES %}
+          <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>
+            {{ val }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit">Update</button>
+    </form>
+  {% elif visa.user == request.user %}
+    <a href="{% url 'visa-update' visa.id %}">Edit</a>
+    <a href="{% url 'visa-delete' visa.id %}">Delete</a>
+  {% endif %}
+</div>
+
 
 </div>
 

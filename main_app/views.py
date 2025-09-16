@@ -36,12 +36,18 @@ def about(request):
 # def visa_index(request):
 #     visas = Visa.objects.filter(user=request.user)
 #     return render(request, 'visas/index.html', { 'visas': visas })
+# def visa_index(request):
+#     if request.user.is_staff:  
+#         visas = Visa.objects.all().order_by("-travel_date")  # الأدمن يشوف الكل
+#     else:
+#         visas = Visa.objects.filter(user=request.user).order_by("-travel_date")  # اليوزر يشوف طلباته فقط
+#     return render(request, 'visas/index.html', {'visas': visas})
+
 def visa_index(request):
-    if request.user.is_staff:  
-        visas = Visa.objects.all().order_by("-travel_date")  # الأدمن يشوف الكل
-    else:
-        visas = Visa.objects.filter(user=request.user).order_by("-travel_date")  # اليوزر يشوف طلباته فقط
-    return render(request, 'visas/index.html', {'visas': visas})
+    if request.user.is_staff:
+        return redirect("admin-dashboard")
+    visas = Visa.objects.filter(user=request.user).order_by("-travel_date")
+    return render(request, "visas/index.html", {"visas": visas})
 
 # views.py
 
@@ -145,7 +151,7 @@ def admin_dashboard(request):
 @staff_member_required
 def admin_messages(request):
     inbox = Message.objects.all().order_by("-timestamp")
-    return render(request, "admin/messages.html", {"inbox": inbox})
+    return render(request, "messages/detail.html", {"inbox": inbox})
 
 @staff_member_required
 def admin_reply_message(request, msg_id):
@@ -174,34 +180,34 @@ def update_visa_status(request, visa_id):
         visa.status = new_status
         visa.save()
     return redirect("admin-dashboard")
+
+
 from django.contrib import messages
 from .forms import VisaStatusForm
 
 @staff_member_required
 def admin_update_visa(request, visa_id):
     visa = get_object_or_404(Visa, id=visa_id)
+    
     if request.method == "POST":
-        form = VisaStatusForm(request.POST, request.FILES, instance=visa)
-        if form.is_valid():
-            updated_visa = form.save()
+        upload_file = request.FILES.get("upload_file")
+        status = request.POST.get("status")
 
-            # Approved → رسالة تنبيه
-            if updated_visa.status == "Approved":
-                messages.info(request, "تمت الموافقة، المعاملة ستأخذ بعض الوقت.")
+        visa.status = status
+        if upload_file:
+            visa.document = upload_file  # يخزن الملف في الحقل
+        visa.save()
 
-            # Completed → رفع ملف
-            if updated_visa.status == "Completed" and request.FILES.get("upload_file"):
-                uploaded_file = request.FILES["upload_file"]
-                with open(f"{settings.MEDIA_ROOT}/{uploaded_file.name}", "wb+") as dest:
-                    for chunk in uploaded_file.chunks():
-                        dest.write(chunk)
-                messages.success(request, "تم رفع الملف بنجاح.")
+        # Alerts
+        from django.contrib import messages
+        if status == "Approved":
+            messages.info(request, "تمت الموافقة، المعاملة ستأخذ بعض الوقت.")
+        elif status == "Completed" and upload_file:
+            messages.success(request, "تم رفع الملف بنجاح.")
 
-            return redirect("admin-dashboard")
-    else:
-        form = VisaStatusForm(instance=visa)
+        return redirect("admin-dashboard")
 
-    return render(request, "admin/update_visa.html", {"form": form, "visa": visa})
+    return render(request, "admin/dashboard.html", {"visas": [visa]})
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect

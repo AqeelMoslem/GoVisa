@@ -21,11 +21,12 @@ urlpatterns = [
     path('accounts/signup/', views.signup, name='signup'),
     path('logout/', views.logout_view, name='logout'),
 
-    path("admin/dashboard/", views.admin_dashboard, name="admin-dashboard"),
-    path("admin/visa/<int:visa_id>/update-status/", views.update_visa_status, name="update-visa-status"),
-    path("admin/messages/", views.admin_messages, name="admin-messages"),
-    path("admin/messages/<int:msg_id>/reply/", views.admin_reply_message, name="admin-reply-message"),
-    path("admin/visa/<int:visa_id>/update/", views.admin_update_visa, name="admin-update-visa"),
+    path("dashboard/", views.admin_dashboard, name="admin-dashboard"),
+    # path("visa/<int:visa_id>/update-status/", views.update_visa_status, name="update-visa-status"),
+    path("messages/", views.admin_messages, name="admin-messages"),
+    path("messages/<int:msg_id>/reply/", views.admin_reply_message, name="admin-reply-message"),
+    path("visa/<int:visa_id>/update/", views.admin_update_visa, name="admin-update-visa"),
+
 
 
 
