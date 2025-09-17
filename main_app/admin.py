@@ -7,6 +7,6 @@ admin.site.register(Visa)
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'sender', 'receiver', 'read', 'timestamp')
-    list_filter = ('read', 'timestamp')
+    list_display = ('subject', 'sender', 'receiver', 'is_read', 'created_at')
+    list_filter = ('is_read', 'created_at')
     search_fields = ('subject', 'body', 'sender__username', 'receiver__username')

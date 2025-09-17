@@ -2,7 +2,6 @@
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -13,6 +12,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.conf import settings
 
+from django.db.models import Q
 from .models import Visa, Message
 from .forms import VisaForm, MessageForm, VisaStatusForm
 
@@ -106,22 +106,31 @@ class VisaDelete(DeleteView):
 # ------------------------------
 # Message Views
 # ------------------------------
-@login_required
-def inbox(request):
-    messages_list = Message.objects.filter(receiver=request.user).order_by('-timestamp')
-    return render(request, 'messages/inbox.html', {'messages': messages_list})
+
 
 @login_required
-def sent_messages(request):
-    messages_list = Message.objects.filter(sender=request.user).order_by('-timestamp')
-    return render(request, 'messages/sent.html', {'sent_messages': messages_list})
+def inbox(request):
+    
+    messages = Message.objects.filter(
+        Q(receiver=request.user) | Q(sender=request.user)
+    ).order_by('-created_at')
+
+    return render(request, 'messages/inbox.html', {'messages': messages})
+
 
 @login_required
 def message_detail(request, message_id):
     message = get_object_or_404(Message, id=message_id)
-    if message.receiver == request.user:
-        message.read = True
+
+
+    if message.receiver != request.user and message.sender != request.user:
+        from django.http import Http404
+        raise Http404("No Message matches the given query.")
+
+    if message.receiver == request.user and not message.is_read:
+        message.is_read = True
         message.save()
+
     return render(request, 'messages/detail.html', {'message': message})
 
 @login_required
@@ -130,11 +139,12 @@ def new_message(request):
         form = MessageForm(request.POST)
         if form.is_valid():
             msg = form.save(commit=False)
-            msg.sender = request.user
+            msg.sender = request.user  
             msg.save()
-            return redirect('sent-messages')
+            return redirect('inbox')  
     else:
         form = MessageForm()
+    
     return render(request, 'messages/new_message.html', {'form': form})
 
 # ------------------------------
@@ -147,7 +157,7 @@ def admin_dashboard(request):
 
 @staff_member_required
 def admin_messages(request):
-    inbox_list = Message.objects.all().order_by("-timestamp")
+    inbox_list = Message.objects.all().order_by("-created_at")
     return render(request, "messages/detail.html", {"inbox": inbox_list})
 
 @staff_member_required
@@ -187,7 +197,7 @@ def admin_update_visa(request, visa_id):
 
         admin_name = request.user.get_full_name() or request.user.username
 
-        # تحديث الرسالة تلقائيًا للمستخدم مع اسم الادمن
+        
         if status == "Approved":
             visa.user_message = f"Your visa has been approved by {admin_name}. Please wait for processing."
         elif status == "Completed" and upload_file:

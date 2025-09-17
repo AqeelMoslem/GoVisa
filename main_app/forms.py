@@ -1,7 +1,6 @@
 from django import forms
-from .models import Visa
-from .models import Message
-
+from .models import Visa, Message
+from django.contrib.auth.models import User
 
 class VisaForm(forms.ModelForm):
     class Meta:
@@ -11,13 +10,18 @@ class VisaForm(forms.ModelForm):
 
 
 class MessageForm(forms.ModelForm):
+    receiver = forms.ModelChoiceField(queryset=User.objects.all(), label="To")
+
     class Meta:
         model = Message
         fields = ['receiver', 'subject', 'body']
 
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['receiver'].queryset = User.objects.filter(is_staff=True) | User.objects.filter(is_superuser=True)
+
 
 class VisaStatusForm(forms.ModelForm):
     class Meta:
         model = Visa
-        fields = ['status']  # بس الحالة تتغير (والملف نرفعه يدوي في view)
+        fields = ['status']
