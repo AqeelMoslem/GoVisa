@@ -5,50 +5,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GoVisa</title>
-   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    {% block head %} {% endblock %}
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+  <!-- Navbar CSS (scoped only for nav) -->
+  <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+  {% block head %}{% endblock %}
 </head>
 <body>
-  <li> </li>
-   <nav>
-  <li><a href="{% url 'home' %}">Home</a> </li>
-  <li><a href="{% url 'about' %}">About</a> </li>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-inner">
+      <a class="brand" href="{% url 'home' %}">GoVisa</a>
+      <ul class="nav-links">
+        <a href="{% url 'about' %}">About</a>
 
-  {% if user.is_authenticated and not user.is_staff %}
-    <li><a href="{% url 'visa-index' %}">My Visas</a> </li>
-    <li><a href="{% url 'visa-create' %}">Add Visa</a> </li>
-  {% endif %}
-  
+        {% if user.is_authenticated and not user.is_staff %}
+          <a href="{% url 'visa-index' %}">My Visas</a>
+          <a href="{% url 'visa-create' %}">Add Visa</a>
+          <a href="{% url 'inbox' %}">Inbox</a>
+        {% endif %}
 
-  {% if user.is_staff %}
-   <li> <a href="{% url 'admin-dashboard' %}">Admin Dashboard</a> </li>
-    <li><a href="{% url 'admin-messages' %}">Messages</a> </li>
-  {% else %}
-    <li><a href="{% url 'inbox' %}">Inbox</a> </li>
-  {% endif %}
+        {% if user.is_staff %}
+          <a href="{% url 'admin-dashboard' %}">Admin Dashboard</a>
+          
+          {% if user.is_authenticated %}
+            <a href="{% url 'inbox' %}">Inbox</a>
+          {% endif %}
+        {% endif %}
 
-  {% if user.is_authenticated %}
-    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-      {% csrf_token %}
-     <li> <button type="submit">Logout</button> </li>
-    </form>
-  {% else %}
-   <li> <a href="{% url 'signup' %}">Signup</a> </li>
-    <li><a href="{% url 'home' %}">Login</a> </li>
-  {% endif %}
-</nav>
-{% if messages %}
+        {% if user.is_authenticated %}
+          
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn-highlight">Logout</button>
+            </form>
+          
+        {% else %}
+          <a href="{% url 'signup' %}">Signup</a>
+          <a href="{% url 'home' %}">Login</a>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Django messages -->
+  {% if messages %}
   <ul class="messages">
     {% for message in messages %}
       <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
     {% endfor %}
   </ul>
-{% endif %}
+  {% endif %}
 
-{% if user.is_authenticated %}
-  <p>Welcome, {{ user.username }}</p>
-{% endif %}
-
+  {% if user.is_authenticated %}
+    <p class="center mt-1">Welcome, {{ user.username }}</p>
+  {% endif %}
 
   <!-- Page Content -->
   <div class="container mt-4">
