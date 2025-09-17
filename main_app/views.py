@@ -136,15 +136,15 @@ def message_detail(request, message_id):
 @login_required
 def new_message(request):
     if request.method == 'POST':
-        form = MessageForm(request.POST)
+        form = MessageForm(request.POST, user=request.user)  # تمرير المستخدم
         if form.is_valid():
             msg = form.save(commit=False)
-            msg.sender = request.user  
+            msg.sender = request.user
             msg.save()
-            return redirect('inbox')  
+            return redirect('inbox')
     else:
-        form = MessageForm()
-    
+        form = MessageForm(user=request.user)  # تمرير المستخدم عند GET
+
     return render(request, 'messages/new_message.html', {'form': form})
 
 # ------------------------------
