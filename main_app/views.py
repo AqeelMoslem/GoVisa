@@ -184,10 +184,18 @@ def admin_update_visa(request, visa_id):
         visa.status = status
         if upload_file:
             visa.document = upload_file
-        visa.save()
+
+        admin_name = request.user.get_full_name() or request.user.username
+
+        # تحديث الرسالة تلقائيًا للمستخدم مع اسم الادمن
         if status == "Approved":
-            messages.info(request, "تمت الموافقة، المعاملة ستأخذ بعض الوقت.")
+            visa.user_message = f"Your visa has been approved by {admin_name}. Please wait for processing."
         elif status == "Completed" and upload_file:
-            messages.success(request, "تم رفع الملف بنجاح.")
+            visa.user_message = f"Your document has been uploaded by {admin_name} successfully."
+        elif status == "Rejected":
+            visa.user_message = f"Your visa was rejected by {admin_name}. Please contact the admin."
+
+        visa.save()
         return redirect("admin-dashboard")
+    
     return render(request, "admin/dashboard.html", {"visas": [visa]})

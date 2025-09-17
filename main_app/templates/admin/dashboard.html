@@ -34,20 +34,21 @@
         </td>
         <td>
           <form method="post" action="{% url 'admin-update-visa' visa.id %}" enctype="multipart/form-data" class="status-form">
-            {% csrf_token %}
-            <select name="status" class="status-select">
-              {% for key, val in visa.STATUS_CHOICES %}
-                <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>{{ val }}</option>
-              {% endfor %}
-            </select>
+    {% csrf_token %}
+    <select name="status" class="status-select" onchange="toggleFileUpload(this)">
+        {% for key, val in visa.STATUS_CHOICES %}
+            <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>{{ val }}</option>
+        {% endfor %}
+    </select>
 
-            <div class="file-upload">
-              <label>Upload:</label>
-              <input type="file" name="upload_file">
-            </div>
+    <div class="file-upload" {% if visa.status != 'Completed' %}style="display:none"{% endif %}>
+        <label>Upload :</label>
+        <input type="file" name="upload_file">
+    </div>
 
-            <button type="submit" class="btn">Update</button>
-          </form>
+    <button type="submit" class="btn">Update</button>
+</form>
+
         </td>
       </tr>
       {% empty %}

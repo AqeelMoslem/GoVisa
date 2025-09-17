@@ -1,11 +1,33 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/messages.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>{{ message.subject }}</h1>
-<p><strong>From:</strong> {{ message.sender }}</p>
-<p><strong>To:</strong> {{ message.receiver }}</p>
-<p><strong>Date:</strong> {{ message.created_at }}</p>
-<hr>
-<p>{{ message.body }}</p>
-<hr>
-<a href="{% url 'inbox' %}">Back to Inbox</a>
+<div class="messages-page">
+  <h1>{{ message.subject }}</h1>
+
+  <table class="messages-table">
+    <tr>
+      <th>From</th>
+      <td>{{ message.sender }}</td>
+    </tr>
+    <tr>
+      <th>To</th>
+      <td>{{ message.receiver }}</td>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <td>{{ message.created_at }}</td>
+    </tr>
+    <tr>
+      <th>Message</th>
+      <td>{{ message.body }}</td>
+    </tr>
+  </table>
+
+  <a href="{% url 'inbox' %}" class="message-btn">Back to Inbox</a>
+</div>
 {% endblock %}

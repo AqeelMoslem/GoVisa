@@ -1,10 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/messages.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>New Message</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn">Send</button>
-</form>
-<a href="{% url 'inbox' %}">Cancel</a>
+<div class="messages-page">
+  <h1>New Message</h1>
+  <form method="post" class="messages-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send</button>
+    <a href="{% url 'inbox' %}" class="cancel-btn">Cancel</a>
+  </form>
+</div>
 {% endblock %}
