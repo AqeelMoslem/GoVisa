@@ -7,7 +7,11 @@
 
 {% block content %}
 <div class="messages-page">
-  <h1>Inbox</h1>
+  <div class="inbox-header">
+    <h1>Inbox</h1>
+    <a href="{% url 'new-message' %}" class="message-btn">New Message</a>
+  </div>
+
   <table class="messages-table">
     <tr>
       <th>From</th>
@@ -18,7 +22,6 @@
     <tr 
       {% if msg.sender == user %}class="sent"{% elif not msg.is_read %}class="unread"{% endif %}
     >
-    
       <td>{{ msg.sender }}</td>
       <td><a href="{% url 'message-detail' msg.id %}">{{ msg.subject }}</a></td>
       <td>{{ msg.created_at }}</td>
@@ -27,6 +30,6 @@
     <tr><td colspan="3">No messages</td></tr>
     {% endfor %}
   </table>
-  <a href="{% url 'new-message' %}" class="message-btn">New Message</a>
 </div>
+
 {% endblock %}
