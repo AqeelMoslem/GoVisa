@@ -2,12 +2,10 @@
 {% load static %}
 
 {% block head %}
-<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin/admin.css' %}">
 {% endblock %}
 
 {% block content %}
-{% comment %} <h1>🛠️ Welcome, Admin</h1> {% endcomment %}
-
 <section class="visa-dashboard">
   <table class="visa-table">
     <thead>
@@ -37,16 +35,14 @@
         <td>
           <form method="post" action="{% url 'admin-update-visa' visa.id %}" enctype="multipart/form-data" class="status-form">
             {% csrf_token %}
-            <select name="status">
+            <select name="status" class="status-select">
               {% for key, val in visa.STATUS_CHOICES %}
-                <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>
-                  {{ val }}
-                </option>
+                <option value="{{ key }}" {% if visa.status == key %}selected{% endif %}>{{ val }}</option>
               {% endfor %}
             </select>
 
             <div class="file-upload">
-              <label>Upload (for Completed):</label>
+              <label>Upload:</label>
               <input type="file" name="upload_file">
             </div>
 
@@ -61,9 +57,5 @@
       {% endfor %}
     </tbody>
   </table>
-</section>
-
-<section class="messages-link">
-  <a href="{% url 'admin-messages' %}" class="btn">📩 View Messages</a>
 </section>
 {% endblock %}
