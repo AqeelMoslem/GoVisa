@@ -1,0 +1,12 @@
+/* home.css */
+.logo-container{display:flex;align-items:center;justify-content:center;padding:28px 0}
+.hero{
+  background: linear-gradient(180deg, rgba(30,144,255,0.06), rgba(30,144,255,0.02));
+  border-radius:12px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 8px 24px rgba(30,144,255,0.04);
+}
+.hero h1{font-size:30px;margin:0 0 8px;color:var(--primary)}
+.hero p{color:#51627a;margin-bottom:18px}
+.hero .cta{display:flex;gap:12px;justify-content:center}

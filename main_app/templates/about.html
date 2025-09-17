@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Go Visa </title>
-  </head>
-  <body>
-    {% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% block title %}About - GoVisa{% endblock %}
+
 {% block content %}
-  <h1>About Go Visa</h1>
-<hr />
-<p class="page-content">
-   Go Visa is a platform to help you manage your horse visas and related information.</p>
+<div class="form-container">
+  <h1>About GoVisa</h1>
+  <p>GoVisa is a platform for submitting, reviewing, and managing visa applications online.</p>
+  <p>Applicants can track their requests while admins can approve, reject, and manage user communications.</p>
+</div>
 {% endblock %}
-
-
-  </body>
-</html>

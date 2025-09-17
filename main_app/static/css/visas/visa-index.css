@@ -1,0 +1,10 @@
+/* visa-index.css */
+.card-content p{margin:6px 0;color:#444}
+.card-title{color:var(--primary);font-weight:700}
+.status{
+  display:inline-block;padding:6px 8px;border-radius:8px;font-weight:700;font-size:13px;
+}
+.status.pending{background:#fff7e6;color:#b36b00;border:1px solid rgba(179,107,0,0.08)}
+.status.approved{background:#e8faf0;color:var(--success)}
+.status.completed{background:#e8f4ff;color:var(--primary)}
+.status.rejected{background:#fff0f0;color:var(--danger)}

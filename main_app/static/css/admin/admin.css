@@ -1,0 +1,9 @@
+/* admin.css */
+.visa-dashboard{max-width:1200px;margin:18px auto;padding:12px}
+.visa-table{width:100%;border-collapse:collapse;background:var(--background);box-shadow:var(--shadow);border-radius:8px;overflow:hidden}
+.visa-table thead{background:#fbfdff}
+.visa-table th, .visa-table td{padding:12px 14px;text-align:left;border-bottom:1px solid #f1f5f9}
+.visa-table tr:hover td{background:#fbfcff}
+.status-form{display:flex;gap:8px;align-items:center}
+.file-upload input[type="file"]{font-size:13px}
+.file-link{display:inline-block;margin-top:6px;color:var(--primary);text-decoration:none}

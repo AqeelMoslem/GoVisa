@@ -1,4 +1,4 @@
-.form-container {
+/* .form-container {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -36,4 +36,34 @@ td > textarea {
 .btn {
   align-self: flex-end;
   margin-right: 40px;
+} */
+
+/* form.css */
+.form-container{
+  max-width:700px;
+  margin:18px auto;
+  background:var(--background);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:var(--shadow);
 }
+.form-container table{width:100%}
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="date"],
+.form-container select,
+.form-container textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #e8eef8;
+  background:#fff;
+  outline:none;
+  font-size:15px;
+}
+.form-container textarea{min-height:100px; resize:vertical}
+.form-container label{display:block;margin-bottom:6px;font-weight:600}
+.form-container .btn{margin-top:12px}
+.form-error{color:var(--danger);font-size:13px;margin-top:6px}
+.form-help{color:#6b7280;font-size:13px}

@@ -27,8 +27,4 @@ urlpatterns = [
     path("messages/<int:msg_id>/reply/", views.admin_reply_message, name="admin-reply-message"),
     path("visa/<int:visa_id>/update/", views.admin_update_visa, name="admin-update-visa"),
 
-
-
-
-   
 ]
