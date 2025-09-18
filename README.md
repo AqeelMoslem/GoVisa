@@ -13,10 +13,8 @@ It allows users to apply for visas online, while administrators manage and appro
 - **Application Status Tracking:** Users can view the status of their applications (Pending, Approved, Rejected).
 - **Admin Dashboard:** Admins can review, approve, or reject visa applications.
 - **Messaging System:** Users and admins can communicate regarding applications.
-- **Notifications:** Email or in-app notifications for status updates and messages.
+- **Notifications:** in-app notifications for status updates and messages.
 - **Role-Based Access:** Separate permissions for users and admins.
-- **Reporting:** Admins can generate reports on visa applications and statuses.
-- **Profile Management:** Users can update their personal information and view application history.
 
 ---
 
