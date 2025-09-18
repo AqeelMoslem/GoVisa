@@ -3,30 +3,130 @@
 
 {% block head %}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
 <style>
 /* Home Hero Section */
 .home-container {
-  height: 80vh;
-  background: url("{% static 'images/logo2.png' %}") center/cover no-repeat;
+  height: 95vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url("{% static 'images/logo2.png' %}") center/cover no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #fff;
+  color: #ffffff;
+  padding: 0 20px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Floating Icons Around Form */
+.floating-icon {
+  position: absolute;
+  font-size: 2rem;
+  color: #fff;
+  opacity: 0.7;
+  animation: float 6s infinite ease-in-out;
+}
+
+.floating-icon:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+.floating-icon:nth-child(2) { top: 20%; right: 20%; animation-delay: 2s; }
+.floating-icon:nth-child(3) { bottom: 15%; left: 25%; animation-delay: 4s; }
+.floating-icon:nth-child(4) { bottom: 10%; right: 15%; animation-delay: 1s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Login Form */
+.login {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+  max-width: 400px;
+  width: 100%;
+  z-index: 1;
+  position: relative;
+}
+
+.login h1 {
+  margin-bottom: 25px;
+  font-size: 2rem;
+  color: #2563eb;
+}
+
+.login input[type="text"],
+.login input[type="password"],
+.login input[type="email"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.login .btn.submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login .btn.submit:hover {
+  background-color: #1d4ed8;
+}
+
+/* Welcome Message for Authenticated Users */
+.welcome-message {
+  text-align: center;
+  color: #fff;
+  font-size: 1.5rem;
+  animation: fadeIn 2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
 </style>
+
 {% endblock %}
 
 {% block content %}
 <!-- Home Section -->
-
 <section class="home-container">
-  
 
- 
-  
+  <!-- Floating Icons -->
+  <i class="fas fa-plane floating-icon"></i>
+  <i class="fas fa-passport floating-icon"></i>
+  <i class="fas fa-globe floating-icon"></i>
+  <i class="fas fa-user-check floating-icon"></i>
+
+{% if not user.is_authenticated %}
+  <form action="{% url 'home' %}" method="post" class="login">
+      <h1>Welcome Back</h1>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="hidden" name="next" value="{{ next }}" />
+      <button type="submit" class="btn submit">Login</button>
+  </form>
+{% else %}
+  <div class="welcome-message">
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>Start exploring your visa applications now.</p>
+  </div>
+{% endif %} 
+
 </section>
-
 {% endblock %}
